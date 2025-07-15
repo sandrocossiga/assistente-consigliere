@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Presenze - Commissioni Consiliari</title>
+    <style>
+        /* Reset e stili base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #2c3e50;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* Container principale */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Form principale */
+        .form-section {
+            padding: 30px;
+            background: #fdfdfd;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-size: 1rem;
+        }
+
+        select, input[type="date"], input[type="time"] {
+            padding: 12px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        /* Pulsanti */
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #7f8c8d 0%, #6c7b7d 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+        }
+
+        /* Sezione tabella */
+        .table-section {
+            padding: 30px;
+            background: white;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .table-header h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+
+        /* Tabella responsive */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        th {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tbody tr:hover {
+            background-color: #e3f2fd;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Stato vuoto */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .form-section, .table-section {
+                padding: 20px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            /* Tabella mobile */
+            .table-container {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 8px 6px;
+            }
+        }
+
+        /* Animazioni */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-section, .table-section {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        /* Alert messages */
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📋 Registro Presenze</h1>
+            <p>Commissioni Consiliari e Consiglio Comunale</p>
+        </div>
+
+        <!-- Form per registrare presenza -->
+        <div class="form-section">
+            <div id="alertContainer"></div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="commissione">Commissione/Organo:</label>
+                    <select id="commissione" required>
+                        <option value="">Seleziona una commissione</option>
+                        <option value="Commissione 1">Commissione 1</option>
+                        <option value="Commissione 4">Commissione 4</option>
+                        <option value="Commissione Regolamenti">Commissione Regolamenti</option>
+                        <option value="Conferenza dei Capigruppo">Conferenza dei Capigruppo</option>
+                        <option value="Consiglio Comunale">Consiglio Comunale</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="data">Data:</label>
+                    <input type="date" id="data" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="oraIngresso">Ora di Ingresso:</label>
+                    <input type="time" id="oraIngresso" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="oraUscita">Ora di Uscita:</label>
+                    <input type="time" id="oraUscita" required>
+                </div>
+            </div>
+
+            <button class="btn" onclick="registraPresenza()">
+                📝 Registra Presenza
+            </button>
+        </div>
+
+        <!-- Tabella delle presenze -->
+        <div class="table-section">
+            <div class="table-header">
+                <h2>Registro delle Presenze</h2>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" onclick="esportaCSV()">
+                        💾 Esporta CSV
+                    </button>
+                    <button class="btn btn-secondary" onclick="mostraStatistiche()">
+                        📊 Statistiche
+                    </button>
+                    <button class="btn btn-secondary" onclick="sincronizzaConGitHub(true)">
+                        🔄 Sincronizza
+                    </button>
+                    <div id="statusSync" style="font-size: 0.9rem; color: #666; align-self: center;">
+                        <!-- Status sincronizzazione -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="tabellaPresenze">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Commissione</th>
+                            <th>Ora Ingresso</th>
+                            <th>Ora Uscita</th>
+                            <th>Durata (min)</th>
+                            <th>Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoTabella">
+                        <!-- Le righe verranno inserite dinamicamente -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="statoVuoto" class="empty-state" style="display: none;">
+                <span style="font-size: 3rem;">📅</span>
+                <h3>Nessuna presenza registrata</h3>
+                <p>Compila il form sopra per registrare la tua prima presenza</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configurazione GitHub (da personalizzare)
+        const GITHUB_CONFIG = {
+            username: 'TUO_USERNAME',  // Sostituisci con il tuo username GitHub
+            repo: 'TUO_REPOSITORY',    // Sostituisci con il nome del repository
+            token: 'TUO_TOKEN',        // Sostituisci con il tuo Personal Access Token
+            branch: 'main',            // Branch dove salvare i dati
+            dataFile: 'presenze_data.json' // Nome del file che conterrà i dati
+        };
+
+        // Array per memorizzare le presenze (persistente con localStorage + GitHub)
+        let presenze = [];
+        let ultimoSalvataggio = null;
+
+        // Inizializzazione dell'applicazione
+        document.addEventListener('DOMContentLoaded', function() {
+            // Imposta la data odierna nel campo data
+            const oggi = new Date().toISOString().split('T')[0];
+            document.getElementById('data').value = oggi;
+            
+            // Carica le presenze (prima localStorage, poi sincronizza con GitHub)
+            caricaPresenze();
+            
+            // Prova a sincronizzare con GitHub automaticamente
+            sincronizzaConGitHub();
+            
+            // Aggiorna la visualizzazione della tabella
+            aggiornaTabella();
+        });
+
+        // Funzione per registrare una nuova presenza
+        function registraPresenza() {
+            // Recupera i valori dai campi del form
+            const commissione = document.getElementById('commissione').value;
+            const data = document.getElementById('data').value;
+            const oraIngresso = document.getElementById('oraIngresso').value;
+            const oraUscita = document.getElementById('oraUscita').value;
+
+            // Validazione dei campi obbligatori
+            if (!commissione || !data || !oraIngresso || !oraUscita) {
+                mostraAlert('Tutti i campi sono obbligatori!', 'error');
+                return;
+            }
+
+            // Validazione orario (l'uscita deve essere dopo l'ingresso)
+            if (oraUscita <= oraIngresso) {
+                mostraAlert('L\'ora di uscita deve essere successiva all\'ora di ingresso!', 'error');
+                return;
+            }
+
+            // Calcola la durata in minuti
+            const durata = calcolaDurata(oraIngresso, oraUscita);
+
+            // Crea l'oggetto presenza
+            const presenza = {
+                id: Date.now(), // ID univoco basato sul timestamp
+                commissione: commissione,
+                data: data,
+                oraIngresso: oraIngresso,
+                oraUscita: oraUscita,
+                durata: durata
+            };
+
+            // Aggiunge la presenza all'array
+            presenze.push(presenza);
+
+            // Salva in memoria (simulazione localStorage)
+            salvaPresenze();
+
+            // Aggiorna la tabella
+            aggiornaTabella();
+
+            // Pulisce il form
+            pulisciForm();
+
+            // Mostra messaggio di successo
+            mostraAlert('Presenza registrata con successo!', 'success');
+        }
+
+        // Funzione per calcolare la durata in minuti
+        function calcolaDurata(oraIngresso, oraUscita) {
+            const [oreIngresso, minutiIngresso] = oraIngresso.split(':').map(Number);
+            const [oreUscita, minutiUscita] = oraUscita.split(':').map(Number);
+            
+            const ingressoMinuti = oreIngresso * 60 + minutiIngresso;
+            const uscitaMinuti = oreUscita * 60 + minutiUscita;
+            
+            return uscitaMinuti - ingressoMinuti;
+        }
+
+        // Funzione per aggiornare la visualizzazione della tabella
+        function aggiornaTabella() {
+            const corpoTabella = document.getElementById('corpoTabella');
+            const statoVuoto = document.getElementById('statoVuoto');
+            
+            // Pulisce la tabella
+            corpoTabella.innerHTML = '';
+            
+            if (presenze.length === 0) {
+                // Mostra lo stato vuoto
+                statoVuoto.style.display = 'block';
+                document.querySelector('.table-container').style.display = 'none';
+                return;
+            }
+            
+            // Nasconde lo stato vuoto e mostra la tabella
+            statoVuoto.style.display = 'none';
+            document.querySelector('.table-container').style.display = 'block';
+            
+            // Ordina le presenze per data (più recenti prima)
+            const presenzeOrdinate = [...presenze].sort((a, b) => {
+                return new Date(b.data) - new Date(a.data);
+            });
+            
+            // Crea le righe della tabella
+            presenzeOrdinate.forEach(presenza => {
+                const riga = document.createElement('tr');
+                riga.innerHTML = `
+                    <td>${formatData(presenza.data)}</td>
+                    <td>${presenza.commissione}</td>
+                    <td>${presenza.oraIngresso}</td>
+                    <td>${presenza.oraUscita}</td>
+                    <td>${presenza.durata}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="eliminaPresenza(${presenza.id})">
+                            🗑️ Elimina
+                        </button>
+                    </td>
+                `;
+                corpoTabella.appendChild(riga);
+            });
+        }
+
+        // Funzione per formattare la data in formato italiano
+        function formatData(dataISO) {
+            const data = new Date(dataISO + 'T00:00:00');
+            return data.toLocaleDateString('it-IT', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Funzione per eliminare una presenza
+        function eliminaPresenza(id) {
+            if (confirm('Sei sicuro di voler eliminare questa presenza?')) {
+                // Rimuove la presenza dall'array
+                presenze = presenze.filter(p => p.id !== id);
+                
+                // Salva in memoria
+                salvaPresenze();
+                
+                // Aggiorna la tabella
+                aggiornaTabella();
+                
+                mostraAlert('Presenza eliminata con successo!', 'success');
+            }
+        }
+
+        // Funzione per pulire il form dopo la registrazione
+        function pulisciForm() {
+            document.getElementById('commissione').value = '';
+            document.getElementById('oraIngresso').value = '';
+            document.getElementById('oraUscita').value = '';
+            // Mantiene la data odierna
+            const oggi = new Date().toISOString().split('T')[0];
+            document.getElementById('data').value = oggi;
+        }
+
+        // Funzione per salvare le presenze nel localStorage e su GitHub
+        function salvaPresenze() {
+            try {
+                // Salva sempre in localStorage per accesso rapido
+                localStorage.setItem('presenze_commissioni', JSON.stringify(presenze));
+                localStorage.setItem('ultimo_salvataggio', new Date().toISOString());
+                console.log('Presenze salvate nel localStorage:', presenze.length, 'elementi');
+                
+                // Salva anche su GitHub automaticamente
+                salvasuGitHub();
+                
+            } catch (error) {
+                console.error('Errore nel salvataggio:', error);
+                mostraAlert('Errore nel salvataggio dei dati!', 'error');
+            }
+        }
+
+        // Funzione per caricare le presenze dal localStorage
+        function caricaPresenze() {
+            try {
+                const datiSalvati = localStorage.getItem('presenze_commissioni');
+                if (datiSalvati) {
+                    presenze = JSON.parse(datiSalvati);
+                    ultimoSalvataggio = localStorage.getItem('ultimo_salvataggio');
+                    console.log('Presenze caricate dal localStorage:', presenze.length, 'elementi');
+                } else {
+                    presenze = [];
+                    console.log('Nessun dato salvato trovato, inizializzazione con array vuoto');
+                }
+            } catch (error) {
+                console.error('Errore nel caricamento:', error);
+                presenze = [];
+                mostraAlert('Errore nel caricamento dei dati salvati!', 'error');
+            }
+        }
+
+        // Funzione per sincronizzare con GitHub
+        async function sincronizzaConGitHub(manuale = false) {
+            if (!GITHUB_CONFIG.token || GITHUB_CONFIG.token === 'TUO_TOKEN') {
+                if (manuale) {
+                    mostraAlert('Configura prima le credenziali GitHub nel codice!', 'error');
+                }
+                return;
+            }
+
+            try {
+                aggiornaStatusSync('🔄 Sincronizzazione...');
+                
+                // Scarica i dati da GitHub
+                const datiGitHub = await scaricaDaGitHub();
+                
+                if (datiGitHub && datiGitHub.presenze) {
+                    // Confronta con i dati locali
+                    const dataGitHub = new Date(datiGitHub.ultimoAggiornamento || 0);
+                    const dataLocale = new Date(ultimoSalvataggio || 0);
+                    
+       
